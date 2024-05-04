@@ -2,4 +2,11 @@
 --  I promise not to create any merge conflicts in this directory :)
 --
 -- See the kickstart.nvim README for more information
-return {}
+return {
+  require 'custom.plugins.catppuccin',
+  require 'custom.plugins.markdown-preview',
+  require 'custom.plugins.vim-tmux-navigator',
+  -- require 'custom.plugins.nvim-tree',
+  require 'custom.plugins.neo-tree',
+  require 'custom.plugins.harpoon',
+}
