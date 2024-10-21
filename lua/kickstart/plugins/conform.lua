@@ -26,6 +26,7 @@ return {
       javascriptreact = { { 'prettierd', 'prettier' } },
       typescriptreact = { { 'prettierd', 'prettier' } },
       json = { { 'prettierd', 'prettier' } },
+      go = { 'goimports', 'gofumpt', 'golangci-lint' },
     },
   },
 }
