@@ -30,28 +30,59 @@ return {
     },
     'mxsdev/nvim-dap-vscode-js',
   },
-  keys = function(_, keys)
-    local dap = require 'dap'
-    local dapui = require 'dapui'
-    return {
-      -- Basic debugging keymaps, feel free to change to your liking!
-      { '<F5>', dap.continue, desc = 'Debug: Start/Continue' },
-      { '<F1>', dap.step_into, desc = 'Debug: Step Into' },
-      { '<F2>', dap.step_over, desc = 'Debug: Step Over' },
-      { '<F3>', dap.step_out, desc = 'Debug: Step Out' },
-      { '<leader>b', dap.toggle_breakpoint, desc = 'Debug: Toggle Breakpoint' },
-      {
-        '<leader>B',
-        function()
-          dap.set_breakpoint(vim.fn.input 'Breakpoint condition: ')
-        end,
-        desc = 'Debug: Set Breakpoint',
-      },
-      -- Toggle to see last session result. Without this, you can't see session output in case of unhandled exception.
-      { '<F7>', dapui.toggle, desc = 'Debug: See last session result.' },
-      unpack(keys),
-    }
-  end,
+  keys = {
+    -- Basic debugging keymaps, feel free to change to your liking!
+    {
+      '<F5>',
+      function()
+        require('dap').continue()
+      end,
+      desc = 'Debug: Start/Continue',
+    },
+    {
+      '<F1>',
+      function()
+        require('dap').step_into()
+      end,
+      desc = 'Debug: Step Into',
+    },
+    {
+      '<F2>',
+      function()
+        require('dap').step_over()
+      end,
+      desc = 'Debug: Step Over',
+    },
+    {
+      '<F3>',
+      function()
+        require('dap').step_out()
+      end,
+      desc = 'Debug: Step Out',
+    },
+    {
+      '<leader>b',
+      function()
+        require('dap').toggle_breakpoint()
+      end,
+      desc = 'Debug: Toggle Breakpoint',
+    },
+    {
+      '<leader>B',
+      function()
+        require('dap').set_breakpoint(vim.fn.input 'Breakpoint condition: ')
+      end,
+      desc = 'Debug: Set Breakpoint',
+    },
+    -- Toggle to see last session result. Without this, you can't see session output in case of unhandled exception.
+    {
+      '<F7>',
+      function()
+        require('dapui').toggle()
+      end,
+      desc = 'Debug: See last session result.',
+    },
+  },
   config = function()
     local dap = require 'dap'
     local dapui = require 'dapui'
@@ -107,48 +138,50 @@ return {
         detached = vim.fn.has 'win32' == 0,
       },
     }
-    require('dap-vscode-js').setup {
-      -- node_path = "node", -- Path of node executable. Defaults to $NODE_PATH, and then "node"
-      -- debugger_path = '(runtimedir)/site/pack/packer/opt/vscode-js-debug', -- Path to vscode-js-debug installation.
-      debugger_path = vim.fn.stdpath 'data' .. '/lazy/vscode-js-debug',
-      -- debugger_cmd = { "extension" }, -- Command to use to launch the debug server. Takes precedence over `node_path` and `debugger_path`.
-      adapters = { 'chrome', 'pwa-node', 'pwa-chrome', 'pwa-msedge', 'node-terminal', 'pwa-extensionHost', 'node', 'chrome' }, -- which adapters to register in nvim-dap
-      -- log_file_path = "(stdpath cache)/dap_vscode_js.log" -- Path for file logging
-      -- log_file_level = false -- Logging level for output to file. Set to false to disable file logging.
-      -- log_console_level = vim.log.levels.ERROR -- Logging level for output to console. Set to false to disable console output.
-    }
 
-    local js_based_languages = { 'typescript', 'javascript', 'typescriptreact' }
-
-    for _, language in ipairs(js_based_languages) do
-      require('dap').configurations[language] = {
-        {
-          type = 'pwa-node',
-          request = 'launch',
-          name = 'Run Jest Tests',
-          cwd = '${workspaceFolder}',
-          sourceMaps = true,
-          runtimeExecutable = './node_modules/jest/bin/jest.js',
-          runtimeArgs = { '--config', 'jest.specs-config.js', '${file}' },
-          console = 'integratedTerminal',
-          internalConsoleOptions = 'neverOpen',
-          resolveSourceMapLocations = { '${workspaceFolder}/**', '!**/node_modules/**' },
-          skipFiles = { '${workspaceFolder}/node_modules/**/*.js' },
-        },
-        {
-          type = 'pwa-node',
-          request = 'launch',
-          name = 'Run Node on current file',
-          cwd = '${workspaceFolder}',
-          runtimeArgs = { '--loader', 'ts-node/esm' },
-          runtimeExecutable = 'node',
-          args = { '${file}' },
-          sourceMaps = true,
-          protocol = 'inspector',
-          resolveSourceMapLocations = { '${workspaceFolder}/**', '!**/node_modules/**' },
-          skipFiles = { '${workspaceFolder}/node_modules/**/*.js' },
-        },
-      }
-    end
+    -- Javascript/Typescript debugging
+    -- require('dap-vscode-js').setup {
+    --   -- node_path = "node", -- Path of node executable. Defaults to $NODE_PATH, and then "node"
+    --   -- debugger_path = '(runtimedir)/site/pack/packer/opt/vscode-js-debug', -- Path to vscode-js-debug installation.
+    --   debugger_path = vim.fn.stdpath 'data' .. '/lazy/vscode-js-debug',
+    --   -- debugger_cmd = { "extension" }, -- Command to use to launch the debug server. Takes precedence over `node_path` and `debugger_path`.
+    --   adapters = { 'chrome', 'pwa-node', 'pwa-chrome', 'pwa-msedge', 'node-terminal', 'pwa-extensionHost', 'node', 'chrome' }, -- which adapters to register in nvim-dap
+    --   -- log_file_path = "(stdpath cache)/dap_vscode_js.log" -- Path for file logging
+    --   -- log_file_level = false -- Logging level for output to file. Set to false to disable file logging.
+    --   -- log_console_level = vim.log.levels.ERROR -- Logging level for output to console. Set to false to disable console output.
+    -- }
+    --
+    -- local js_based_languages = { 'typescript', 'javascript', 'typescriptreact' }
+    --
+    -- for _, language in ipairs(js_based_languages) do
+    --   require('dap').configurations[language] = {
+    --     {
+    --       type = 'pwa-node',
+    --       request = 'launch',
+    --       name = 'Run Jest Tests',
+    --       cwd = '${workspaceFolder}',
+    --       sourceMaps = true,
+    --       runtimeExecutable = './node_modules/jest/bin/jest.js',
+    --       runtimeArgs = { '--config', 'jest.specs-config.js', '${file}' },
+    --       console = 'integratedTerminal',
+    --       internalConsoleOptions = 'neverOpen',
+    --       resolveSourceMapLocations = { '${workspaceFolder}/**', '!**/node_modules/**' },
+    --       skipFiles = { '${workspaceFolder}/node_modules/**/*.js' },
+    --     },
+    --     {
+    --       type = 'pwa-node',
+    --       request = 'launch',
+    --       name = 'Run Node on current file',
+    --       cwd = '${workspaceFolder}',
+    --       runtimeArgs = { '--loader', 'ts-node/esm' },
+    --       runtimeExecutable = 'node',
+    --       args = { '${file}' },
+    --       sourceMaps = true,
+    --       protocol = 'inspector',
+    --       resolveSourceMapLocations = { '${workspaceFolder}/**', '!**/node_modules/**' },
+    --       skipFiles = { '${workspaceFolder}/node_modules/**/*.js' },
+    --     },
+    --   }
+    -- end
   end,
 }

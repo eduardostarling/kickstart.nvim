@@ -4,10 +4,12 @@
 -- See the kickstart.nvim README for more information
 return {
   require 'custom.plugins.catppuccin',
-  -- require 'custom.plugins.markdown-preview',
+  require 'custom.plugins.markdown-preview',
   require 'custom.plugins.vim-tmux-navigator',
   -- require 'custom.plugins.nvim-tree',
   require 'custom.plugins.neo-tree',
   require 'custom.plugins.harpoon',
-  require 'custom.plugins.typescript-tools',
+  require 'custom.plugins.go',
+  require 'custom.plugins.gen',
+  -- require 'custom.plugins.typescript-tools',
 }
